@@ -110,32 +110,5 @@ function WebDispatcher:get(path)
   return response_body, code
 end
 
----
--- Add a new tasking
--- @param #string type
--- @param #string desc
--- @param #Vec3 coord
-function WebDispatcher:addTask(type, desc, coord)
-  type = type or "TR"
-  desc = type or "No Description" -- These needs to be local?
-  coord = coord or {x = 0, y = 0, z = 0}
-
-  local path = self.url .. "/taskings/" .. self.eventID -- localhost:5000/api/v1/taskings/:eventID
-  local payload = {type, desc, coord}
-
-  WebDispatcher:post(path, payload)
-end
-
+-- Make a logfile entry that we are up and running :)
 env.info(" WebDispatcher: Endpoint @" .. WebDispatcher.url .. "\n")
-
--- WD = WebDispatcher:new()
--- WD2 = WebDispatcher:new("someURL", 99)
-
--- print(WD.url, WD.eventID)
--- print(WD2.url, WD2.eventID)
-
--- WD:addTask("AI", "someDesc", {x = 1, y = 2, z = 3})
-
--- WD:test()
-
--- WD:post('http://client.tnc.today/api/v1/warehouse/2', { foo = 'test'} )
