@@ -1,0 +1,9 @@
+*.exe
+*.dll
+*.bat
+
+/lua
+/mime
+/socket
+
+GetWeapons.lua
