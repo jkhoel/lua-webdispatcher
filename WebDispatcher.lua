@@ -15,38 +15,20 @@ local ltn12 = require("ltn12")
 require = nil
 
 ---
--- WebDispatcher, wrapper class for communications with REST API's
+-- WebDispatcher, a wrapper for communications with REST API's
 -- @author 132nd.Dex
 
---- @module Class
+--- @module WebDispatcher
 
 ---
 -- A template for creating WebDispatcher objects.
--- @type Class
+-- @type WebDispatcher
 -- @field #string url
 -- @field #number eventID
 WebDispatcher = {
   url = "http://localhost:5000/api/v1",
   eventID = 0
 }
-
----
--- Creates a new class.
--- @param #Class self
--- @return #Class
-function WebDispatcher:create()
-  return setmetatable({}, {__index = WebDispatcher})
-end
-
----
--- Creates a subclass of this class.
--- @param #Class self
--- @return #Class
-function WebDispatcher:extend()
-  local class = WebDispatcher:create()
-  setmetatable(class, {__index = self})
-  return class
-end
 
 ---
 -- Tests that the module is loaded
@@ -60,8 +42,8 @@ end
 
 ---
 -- Create a new WebDispatcher object connected to a certain endpoint
--- @param #Class self
--- @return #Class
+-- @param #WebDispatcher self
+-- @return #WebDispatcher
 function WebDispatcher:new(url, eventID)
   local conn = setmetatable({}, {__index = self})
   conn.url = url or self.url
