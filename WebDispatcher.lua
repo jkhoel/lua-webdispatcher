@@ -12,6 +12,7 @@ package.cpath = package.cpath .. ";.\\LuaSocket\\?.dll"
 require = mint.require
 local http = require("socket.http")
 local ltn12 = require("ltn12")
+local json = require("json")
 require = nil
 
 ---
@@ -57,7 +58,18 @@ end
 -- @param #table payload
 function WebDispatcher:post(path, payload)
   path = path or self.url
-  payload = payload or {}
+
+  -- If there is no payload, or the payload is not a table...
+  if not (type(payload) == "table") then
+    -- Print some information informing that something didn't go as planned
+    print("Payload missing or invalid (not a table)")
+    env.info(" WebDispatcher: Payload missing or invalid (not a table) - target path: " .. path .. "\n")
+   
+    -- Return false, so that the mission script logic can account for any mishap on their side
+    return nil
+  end
+
+  request_body = json:encode(payload)
 
   local response_body = {}
   local res, code, response_headers, status =
@@ -66,14 +78,13 @@ function WebDispatcher:post(path, payload)
     method = "POST",
     headers = {
       -- ["Authorization"] = "Maybe you need an Authorization header?",
-      ["Content-Type"] = "application/x-www-form-urlencoded",
-      ["Content-Length"] = payload:len()
+      ["Content-Type"] = "application/json",
+      ["Content-Length"] = #request_body
     },
-    source = ltn12.source.string(payload),
+    source = ltn12.source.string(request_body),
     sink = ltn12.sink.table(response_body)
   }
 
-  print(path, payload)
   return code
 end
 
@@ -81,7 +92,7 @@ function WebDispatcher:get(path)
   path = path or self.url
   local response_body = {}
 
-  env.info(" WebDispatcher:test() Path = " .. path .. "\n")
+  env.info(" WebDispatcher:get() Path = " .. path .. "\n")
 
   local res, code, response_headers, status =
     http.request {
